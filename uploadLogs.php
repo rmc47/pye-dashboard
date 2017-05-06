@@ -3,7 +3,7 @@ $dbName = "arran2016";
 $webBase = "";
 
 echo ("Connecting to local DB...\n");
-mysql_connect("localhost", "root", "");
+mysqli_connect("localhost", "root", "");
 $arr = mysql_fetch_array(mysql_db_query($dbName, "SELECT id FROM sources WHERE `default`=1;"));
 $sourceId=intval($arr[0]);
 

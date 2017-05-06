@@ -3,7 +3,7 @@ $dbName = "arran2011";
 $dataDbName = "arran2011data";
 
 echo ("Connecting to local DB...\n");
-mysql_connect("localhost", "root", "");
+mysqli_connect("localhost", "root", "");
 $arr = mysql_fetch_array(mysql_db_query($dbName, "SELECT val from setup WHERE `key`='sourceId';"));
 $sourceId=intval($arr[0]);
 

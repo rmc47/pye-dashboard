@@ -2,7 +2,7 @@
 
 <body>
 <?
-$conn = mysql_connect("localhost:3306", "logview", "log") or die(mysql_error());
+$conn = mysqli_connect("localhost:3306", "logview", "log") or die(mysql_error());
 $res = mysql_db_query("hrd", "SELECT * FROM log order by time desc");
 ?>
 <table border="1">

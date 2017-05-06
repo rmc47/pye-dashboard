@@ -1,12 +1,12 @@
 <?php require_once("funcs.php.inc"); ?>
 <?php
-	$band = mysql_escape_string($_REQUEST["band"]);
-	$mode = mysql_escape_string($_REQUEST["mode"]);
-	$operator = mysql_escape_string($_REQUEST["operator"]);
-	$date = mysql_escape_string($_REQUEST["date"]);
-	$station = mysql_escape_string($_REQUEST["station"]);
-	$call = mysql_escape_string($_REQUEST["call"]);
-	$satname = mysql_escape_string($_REQUEST["satellitename"]);
+	$band = $db->escape_string($_GET["band"]);
+	$mode = $db->escape_string($_GET["mode"]);
+	$operator = $db->escape_string($_GET["operator"]);
+	$date = $db->escape_string($_GET["date"]);
+	$station = $db->escape_string($_GET["station"]);
+	$call = $db->escape_string($_REQUEST["call"]);
+	$satname = $db->escape_string($_GET["satellitename"]);
 ?>
 <html>
 <head>
