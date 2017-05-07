@@ -35,14 +35,14 @@ function getBandModeCount($band, $mode) {
 	global $db;
 	$res = $db->query("SELECT cnt FROM bandmodestats WHERE band='$band' AND mode='$mode';") or die ("Error getting count: " . $db->error);
 	if ($arr = $res->fetch_assoc())
-		return $arr[0];
+		return $arr["cnt"];
 }
 
 function getBandModeCountLive($band, $mode) {
 	global $db;
-	$res = $db->query("SELECT COUNT(*) FROM log LEFT JOIN modemap ON log.mode = modemap.sourceText WHERE band='$band' AND (mode='$mode' OR displayText='$mode');");
+	$res = $db->query("SELECT COUNT(*) AS cnt FROM log LEFT JOIN modemap ON log.mode = modemap.sourceText WHERE band='$band' AND (mode='$mode' OR displayText='$mode');");
 	if ($arr = $res->fetch_assoc())
-		return $arr[0];
+		return $arr["cnt"];
 	else 
 		return 0;
 }
@@ -55,8 +55,8 @@ function updateBandModeTable() {
 	foreach ($modes as $mode) {
 		echo("Using mode: $mode\n");
 		foreach ($bands as $band) {
-			$cnt = getBandModeCountLive($band, $mode);
-			$sql = "INSERT INTO bandmodestats (band, mode, cnt) VALUES ('$band', '$mode', $cnt) ON DUPLICATE KEY UPDATE cnt=$cnt;";
+			$cnt = intval(getBandModeCountLive($band, $mode));
+			$sql = "INSERT INTO bandmodestats (band, mode, cnt) VALUES ('$band', '$mode', " . $cnt . ") ON DUPLICATE KEY UPDATE cnt=" . $cnt . ";";
 			$db->query($sql) or die ("Error updating stats: " . $db->error);
 		}
 	}
