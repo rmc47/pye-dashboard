@@ -1,11 +1,10 @@
 <?php
-$dbName = "arran2016";
+require_once("funcs.php.inc");
 $webBase = "";
 
-echo ("Connecting to local DB...\n");
-mysqli_connect("localhost", "root", "");
-$arr = mysql_fetch_array(mysql_db_query($dbName, "SELECT id FROM sources WHERE `default`=1;"));
-$sourceId=intval($arr[0]);
+$res = $db->query("SELECT id FROM sources WHERE `default`=1;");
+$arr = $res->fetch_assoc();
+$sourceId=intval($arr["id"]);
 
 while (true) {
 	echo ("Getting latest remote server state...\n");
@@ -14,14 +13,14 @@ while (true) {
 	fclose($handle);
 	$lastModified = $contents;
 	echo ("Last QSO on server was number: $lastModified\n");
-	$sqlRes = mysql_db_query($dbName, "SELECT MAX(lastModified) FROM log;") or die ("Error querying local DB: " . mysql_error());
-	$sqlArr = mysql_fetch_array($sqlRes); 
-	$lastLocal = $sqlArr[0];
+	$sqlRes = $db->query"SELECT MAX(lastModified) AS maxMod FROM log;") or die ("Error querying local DB: " . $db->error);
+	$sqlArr = $sqlRes->fetch_assoc();
+	$lastLocal = $sqlArr["maxMod"];
 	echo ("Last local QSO modified at: $lastLocal\n");
 	echo ("Beginning uploads...\n");
-	$sqlRes = mysql_db_query($dbName, "SELECT * FROM log WHERE lastModified >= ('$lastModified' - interval 5 minute);") or die ("Error querying table " . mysql_error());
+	$sqlRes = $db->query("SELECT * FROM log WHERE lastModified >= ('$lastModified' - interval 5 minute);") or die ("Error querying table " . $db->error);
 
-	while ($sqlArr = mysql_fetch_array($sqlRes))
+	while ($sqlArr = $sqlRes->fetch_assoc())
 		{
 			$id = $sqlArr["id"];
 			$sourceId = $sqlArr["sourceId"];
