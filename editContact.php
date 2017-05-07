@@ -5,12 +5,12 @@ $arr = $db->query("SELECT * FROM log WHERE sourceId=$sourceId AND id=$id")->fetc
 
 if (isset($_REQUEST["submit"])) {
 	// Going to process an edit
-	$startTime=mysql_escape_string($_REQUEST["time"]);
-	$callsign=mysql_escape_string($_REQUEST["callsign"]);
+	$startTime=$db->escape_string($_REQUEST["time"]);
+	$callsign=$db->escape_string($_REQUEST["callsign"]);
 	$frequency=intval($_REQUEST["frequency"]);
-	$mode=mysql_escape_string($_REQUEST["mode"]);
-	$operator=mysql_escape_string($_REQUEST["operator"]);
-	$station=mysql_escape_string($_REQUEST["station"]);
+	$mode=$db->escape_string($_REQUEST["mode"]);
+	$operator=$db->escape_string($_REQUEST["operator"]);
+	$station=$db->escape_string($_REQUEST["station"]);
 	$lastModified = date("Y-m-d H:i:s");
 	$sql = "UPDATE log SET startTime='$startTime', callsign='$callsign', frequency=$frequency, mode='$mode', operator='$operator', station='$station', lastModified='$lastModified' WHERE id=$id AND sourceId=$sourceId;";
 	$db->query($sql) or die ("Update failed: " . $db->error);
