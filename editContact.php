@@ -1,9 +1,7 @@
 <?php require_once("funcs.php.inc"); 
 $sourceId = intval($_REQUEST["sourceId"]);
 $id = intval($_REQUEST["id"]);
-	print_r("Hello");
-	print_r($_REQUEST);
-$arr = mysql_fetch_array(mysql_db_query($dbName, "SELECT * FROM log WHERE sourceId=$sourceId AND id=$id")) or die ("Contact not found");
+$arr = $db->query("SELECT * FROM log WHERE sourceId=$sourceId AND id=$id")->fetch_assoc() or die ($db->error);
 
 if (isset($_REQUEST["submit"])) {
 	// Going to process an edit
@@ -15,8 +13,7 @@ if (isset($_REQUEST["submit"])) {
 	$station=mysql_escape_string($_REQUEST["station"]);
 	$lastModified = date("Y-m-d H:i:s");
 	$sql = "UPDATE log SET startTime='$startTime', callsign='$callsign', frequency=$frequency, mode='$mode', operator='$operator', station='$station', lastModified='$lastModified' WHERE id=$id AND sourceId=$sourceId;";
-	echo ($sql);
-	mysql_db_query($dbName, $sql) or die ("Update failed: " . mysql_error());
+	$db->query($sql) or die ("Update failed: " . $db->error);
 	echo ("Update processed");
 	header("Location: index.php");
 }
