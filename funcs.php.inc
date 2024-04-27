@@ -31,18 +31,25 @@ function getAllModes() {
 	return $results;
 }
 
+function getModeCount($mode) {
+	global $db;
+	$res = $db->query("SELECT SUM(cnt) AS modeCount FROM bandmodestats WHERE mode='$mode';") or die ("Error getting count: " . $db->error);
+	if ($arr = $res->fetch_assoc())
+		return intval($arr["modeCount"]);
+}
+
 function getBandModeCount($band, $mode) {
 	global $db;
 	$res = $db->query("SELECT cnt FROM bandmodestats WHERE band='$band' AND mode='$mode';") or die ("Error getting count: " . $db->error);
 	if ($arr = $res->fetch_assoc())
-		return $arr["cnt"];
+		return intval($arr["cnt"]);
 }
 
 function getBandModeCountLive($band, $mode) {
 	global $db;
 	$res = $db->query("SELECT COUNT(*) AS cnt FROM log LEFT JOIN modemap ON log.mode = modemap.sourceText WHERE band='$band' AND (mode='$mode' OR displayText='$mode');");
 	if ($arr = $res->fetch_assoc())
-		return $arr["cnt"];
+		return intval($arr["cnt"]);
 	else 
 		return 0;
 }
@@ -72,6 +79,13 @@ function getTotalCount() {
 		return 0;
 }
 
+function getDistinctCount() {
+	global $db;
+	$res = $db->query("SELECT count(DISTINCT(callsign)) as distinctCalls FROM log;");
+	if ($arr = $res->fetch_assoc())
+		return intval($arr["distinctCalls"]);
+}
+
 function getOperators() {
 	global $db;
 	$res = $db->query("SELECT operator, COUNT(*) FROM log GROUP BY operator ORDER BY COUNT(*) DESC;");
@@ -86,7 +100,7 @@ function getOperatorCount($operator) {
 	global $db;
 	$res = $db->query("SELECT qsos FROM operatorstats WHERE operator='$operator';");
 	if ($arr = $res->fetch_assoc())
-		return $arr["qsos"];
+		return intval($arr["qsos"]);
 }
 
 function getLastWorked($callsign) {
@@ -94,6 +108,17 @@ function getLastWorked($callsign) {
 	$res = $db->query("SELECT operator, startTime FROM log WHERE callsign LIKE '%$callsign%' ORDER BY startTime DESC LIMIT 1;");
 	if ($arr = $res->fetch_assoc())
 		return ($arr["startTime"]) . " by " . $arr["operator"];
+}
+function getLastLocatorsArray() {
+	global $db;
+	$res = $db->query("SELECT locator FROM log ORDER BY ID DESC LIMIT 100;");
+	$results = [];
+	while ($arr = $res->fetch_assoc()) {
+		if ($arr["locator"]) {
+			array_push($results, $arr["locator"]);
+		}
+	}
+	return $results;
 }
 
 function plotBandModesTable() {
